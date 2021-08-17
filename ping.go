@@ -4,11 +4,21 @@ import (
 	"net/http"
 )
 
-func PingHandler() (http.Handler, error) {
+func PingPongHandler() (http.Handler, error) {
+	return PingHandler("PONG")
+}
+
+func PingHandler(response string) (http.Handler, error) {
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
+
 		rsp.Header().Set("Content-Type", "text/plain")
-		rsp.Write([]byte("PONG"))
+
+		if response != "" {
+			rsp.Header().Set("X-ping", response)
+		}
+
+		rsp.WriteHeader(http.StatusNoContent)
 	}
 
 	h := http.HandlerFunc(fn)
